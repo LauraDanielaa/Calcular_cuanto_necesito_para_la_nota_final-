@@ -16,6 +16,10 @@
             /* Fondo claro */
         }
 
+        .alert {
+            display: none; /* Ocultar inicialmente */
+        }
+
         .login-container {
             background: white;
             padding: 2rem;
@@ -33,6 +37,10 @@
 <body>
     <div class="login-container">
         <h2 class="text-center mb-4">Iniciar Sesión</h2>
+
+        <div id="errorAlert" class="alert alert-danger text-center" role="alert">
+            Inicio de sesión fallido. Verifica tu correo y contraseña.
+        </div>
         <form id="loginForm">
             <div class="mb-3">
                 <label for="email" class="form-label">Correo Electrónico</label>

@@ -21,35 +21,57 @@ def validarNotas(notas):
             porcentaje=i[1]/100
             query = f"validar_porcentajes({nota}, {porcentaje})"
             list(prolog.query(query))
-            
+        return True
     except Exception as e:
-        print('Nota o porcentaje no valido')
+        return False
     
 @app.route("/recibirNotas", methods=["POST"])
 def recibirNotas():
     datos = request.get_json()
     notas=datos["datos"]
-    Resultado=calcularNotas(notas)
-    return jsonify({"mensaje": Resultado})
+    if validarNotas(notas):
+        Resultado=calcularNotas(notas)
+        return jsonify({"mensaje": Resultado})
+    else:
+        return jsonify({"mensaje": "error"})
 
 @app.route("/iniciarSesion", methods=["POST"])
 def iniciarSesion():
     datos = request.get_json()
     correo = datos["correo"]
     contraseña=str(datos["contraseña"])
-    print(correo, contraseña)
     try:
         # Comprobamos si el docente ya existe para evitar duplicados
         consulta = f"estudiante(_, _, '{correo}', {contraseña})"
         existe = list(prolog.query(consulta))
-        print(existe)
         if existe:
-            print("hola")
             return jsonify({"status": "success", "redirect_url": "http://127.0.0.1:5501/index.html"})
         else:
-            return jsonify({"mensaje": "El usuario no esta registrado"})
+            return jsonify({"status": "error"})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.route("/registro", methods=["POST"])
+def registro():
+    datos = request.get_json()
+    nombre = datos["nombre"]
+    apellido = datos["apellido"]
+    correo = datos["correo"]
+    contraseña=datos["contraseña"]
+    try:
+        # Comprobamos si el docente ya existe para evitar duplicados
+        consulta = f"estudiante({nombre}, {apellido}, '{correo}', {contraseña})"
+        existe = list(prolog.query(consulta))
+        if existe:
+            return jsonify({"status": "error", "mensaje":"El estudiante ya esta registrado"})
+        else:
+            comando = f"assertz(estudiante({nombre}, {apellido},'{correo}',{contraseña}))"
+            list(prolog.query(comando))
+            return jsonify({"status": "success", "redirect_url": "http://127.0.0.1:5501/iniciarSesion.html"})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
     
 def calcularNotas(notas):
     nota=[]

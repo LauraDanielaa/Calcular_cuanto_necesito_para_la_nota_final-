@@ -1,8 +1,7 @@
 document.getElementById("loginForm").addEventListener("submit", function (event) {
     let correo = document.getElementById("email").value;
     let contraseña = document.getElementById("password").value;
-    let errorEmail = document.getElementById("error-email");
-    let errorPassword = document.getElementById("error-password");
+    const errorAlert = document.getElementById("errorAlert");
 
     event.preventDefault(); 
     fetch("http://localhost:5000/iniciarSesion", {
@@ -15,13 +14,8 @@ document.getElementById("loginForm").addEventListener("submit", function (event)
             if (data.status === "success") {
                 window.location.href = data.redirect_url; // Redirige a index.html
             } else {
-                mensaje.textContent = data.mensaje; // Muestra el mensaje de error
-                mensaje.style.color = "red";
+                errorAlert.style.display = "block";
             }
         })
         .catch(error => console.error("Error:", error));
-
-    
-    errorEmail.textContent = "";
-    errorPassword.textContent = "";
 });

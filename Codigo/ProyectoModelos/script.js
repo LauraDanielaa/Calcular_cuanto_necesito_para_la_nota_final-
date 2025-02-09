@@ -31,7 +31,10 @@ function calcularNota() {
         .then(response => response.json())
         .then(data => {
             console.log(data.mensaje);
-            if (data.mensaje <= 0) {
+            if (data.mensaje === "error"){
+                resultadoTexto = "La suma de porcentajes es erronea";
+                resultadoClase = "text-danger";
+            } else if (data.mensaje <= 0) {
                 resultadoTexto = "¡Felicidades! Ya tienes la nota necesaria para aprobar.";
                 resultadoClase = "text-success";
                 img.src="imagenes/gato_nota_mayor_a_5.png"
