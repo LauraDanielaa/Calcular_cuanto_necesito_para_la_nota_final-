@@ -1,6 +1,5 @@
 from http.client import HTTPException
 from pyswip import Prolog
-from pydantic import BaseModel
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_cors import CORS
 
@@ -45,7 +44,7 @@ def iniciarSesion():
         consulta = f"estudiante(_, _, '{correo}', {contraseña})"
         existe = list(prolog.query(consulta))
         if existe:
-            return jsonify({"status": "success", "redirect_url": "http://127.0.0.1:5501/index.html"})
+            return jsonify({"status": "success", "redirect_url": "./index.html"})
         else:
             return jsonify({"status": "error"})
     except Exception as e:
@@ -67,7 +66,7 @@ def registro():
         else:
             comando = f"assertz(estudiante({nombre}, {apellido},'{correo}',{contraseña}))"
             list(prolog.query(comando))
-            return jsonify({"status": "success", "redirect_url": "http://127.0.0.1:5501/iniciarSesion.html"})
+            return jsonify({"status": "success", "redirect_url": "./iniciarSesion.html"})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
